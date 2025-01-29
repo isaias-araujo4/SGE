@@ -1,2 +1,2 @@
 # SGE
- Sistema de gestão de estoque
+ Sistema de gerenciamento de estoque
