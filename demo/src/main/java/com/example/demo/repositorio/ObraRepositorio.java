@@ -9,5 +9,5 @@ import com.example.demo.modelo.obra.ObraModelo;
 
 @Repository
 public interface ObraRepositorio extends CrudRepository<ObraModelo, Long>{
-    Optional<ObraModelo> findfindByNome(String nome);
+    Optional<ObraModelo> findByNome(String nome);
 } 

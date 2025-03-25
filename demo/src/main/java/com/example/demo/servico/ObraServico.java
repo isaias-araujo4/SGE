@@ -27,15 +27,29 @@ public class ObraServico {
 
     // método para cadastrar ou editar obras
     public ResponseEntity<?> cadastrarEditar(ObraModelo om, String acao) {
-        if (om.getNome().equals("")) {
-            ro.setMensagem("O nome da obra é obrigatótio");
-            return new ResponseEntity<RespostaObra>(ro, HttpStatus.BAD_REQUEST);
-        } else {
-            if (acao.equals("cadastrar")) {
-                return new ResponseEntity<ObraModelo>(or.save(om), HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<ObraModelo>(or.save(om), HttpStatus.OK);
+        Optional<ObraModelo> obraExistente = or.findByNome(om.getNome());
+
+        if (om.getNome() == null || om.getNome().trim().isEmpty()) {
+            ro.setMensagem("O nome da obra é obrigatório");
+            return new ResponseEntity<>(ro, HttpStatus.BAD_REQUEST);
+        }
+
+        om.setNome(om.getNome().trim().toUpperCase());
+
+        if (acao.equals("cadastrar")) {
+            // Se a obra já existe, impede o cadastro
+            if (obraExistente.isPresent()) {
+                ro.setMensagem("Já existe uma obra com esse nome");
+                return new ResponseEntity<>(ro, HttpStatus.CONFLICT);
             }
+            return new ResponseEntity<>(or.save(om), HttpStatus.CREATED);
+        } else {
+            // Se estiver editando, verifica se o nome já existe e pertence a outra obra
+            if (obraExistente.isPresent() && !obraExistente.get().getCodigo().equals(om.getCodigo())) {
+                ro.setMensagem("Já existe uma obra com esse nome");
+                return new ResponseEntity<>(ro, HttpStatus.CONFLICT);
+            }
+            return new ResponseEntity<>(or.save(om), HttpStatus.OK);
         }
     }
 

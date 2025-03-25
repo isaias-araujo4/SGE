@@ -39,7 +39,7 @@ public class ObraControle {
     }
 
     //rota para deletar obra
-    @DeleteMapping("/deletar/{codigo}")
+    @DeleteMapping("/deletarObras/{codigo}")
     public ResponseEntity<RespostaObra> deletar(@PathVariable Long codigo){
         return os.deletar(codigo);
     }
